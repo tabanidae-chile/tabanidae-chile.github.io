@@ -1080,7 +1080,7 @@ function accountView() {
   return heading('Mi cuenta','Sincroniza tus ejemplares y solicita acceso a las copias de la bibliografía.') +
     description(email ? 'Sesión iniciada' : 'Acceso con Google',
       (email ? `<p>Correo de Google verificado · <strong>${escape(email)}</strong></p>
-        <p>Al solicitar acceso, el catálogo registra este correo para que el administrador pueda autorizarlo como lector en Drive.</p>
+        <p>Al solicitar acceso, tu correo verificado recibirá permiso de lectura en la carpeta de artículos de Drive.</p>
         <div class="actions"><button type="button" class="button" data-account-action="access"${disabled ? ' disabled' : ''}>Solicitar acceso a las copias</button>
         <button type="button" class="secondary" data-account-action="logout"${disabled ? ' disabled' : ''}>Cerrar sesión</button></div>` :
         `<p>Google verifica tu identidad. Las contraseñas y su recuperación se gestionan en Google.</p>
@@ -1163,13 +1163,14 @@ async function handleAccountAction(action) {
       accountStatus.message = 'Sesión cerrada.';
     }
     if (action === 'access' && accountStatus.email) {
-      const {error} = await client.rpc('solicitar_acceso_drive');
+      const {data,error} = await client.functions.invoke('conceder-acceso-drive',{body:{}});
       if (error) throw error;
-      accountStatus.message = 'Solicitud registrada. El administrador puede darte acceso en Drive con este correo.';
+      if (!data?.granted) throw new Error('Drive no confirmó el permiso');
+      accountStatus.message = 'Acceso de lectura concedido. Ya puedes abrir las copias en Drive.';
     }
   } catch {
     accountStatus.message = action === 'login' ? 'No se pudo iniciar sesión con Google. Intenta nuevamente.' :
-      action === 'access' ? 'No se pudo registrar tu solicitud. Intenta nuevamente.' : 'No se pudo cerrar la sesión. Intenta nuevamente.';
+      action === 'access' ? 'No se pudo conceder acceso en Drive. Intenta nuevamente.' : 'No se pudo cerrar la sesión. Intenta nuevamente.';
   }
   accountStatus.busy = false;
   redrawAccount();
