@@ -3451,7 +3451,7 @@ function keyCard(key) {
       <div class="key-card-flags">${key.terminales.length ? '<span class="key-card-chile" role="img" tabindex="0" aria-label="Contiene terminales presentes en Chile" title="Contiene terminales presentes en Chile">✓</span>' : ''}
         ${favoriteKeyButton(key.id)}</div></div>
     <div class="key-source-meta">${speciesSource(key)}</div>
-    <div class="key-source-context"><strong>Alcance</strong> · ${escape(key.alcance)}
+    <div class="key-source-context"><strong>Alcance</strong> · ${linkedScientificText(key.alcance)}
       <br><strong>Terminales</strong> · ${num(key.totalTerminales)}${key.sexo ? '<br><strong>Sexo o estadio</strong> · ' + escape(key.sexo) : ''}</div>
     <div class="key-source-links">${anchor(key.navegable ? 'Ir a la clave →' : 'Consultar transcripción →',specimenKeyLink(key,activeSpecimen()),'key-button key-read-link')}</div></article>`;
 }
