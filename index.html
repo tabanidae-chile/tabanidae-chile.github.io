@@ -590,6 +590,7 @@ body:has(.hero--refresh) .mainspace .panels > .panel p{max-width:38ch}
 /* Extensiones de Tabanidae. Los componentes comunes se definen en ceratopogonidae.css. */
 :focus-visible{outline:2px solid #296851;outline-offset:3px}
 #app:focus{outline:none}
+.figure-loading{margin:12vh auto;text-align:center;color:#557168}
 .skip{position:absolute;left:14px;top:-120px;z-index:100;background:white;padding:10px}
 .skip:focus{top:10px}
 .tabanid-mark{font:italic 700 25px Georgia,serif}
@@ -1298,6 +1299,7 @@ function initializeAccount() {
       !project ? 'Vista previa. Falta conectar el servicio de inicio de sesión.' :
         'No se pudo cargar el servicio de inicio de sesión. Recarga la página para reintentar.';
     redrawAccount();
+    void loadFigureAssets();
     return;
   }
   const callback = new URL(location.href).searchParams.has('code');
@@ -1553,6 +1555,7 @@ window.addEventListener('online',syncAccountSpecimens);
 
 const figureBucket = 'tabanidae-figures';
 const figureOverrides = new Map();
+let figureAssetsReady = !accountEnabled;
 let originalFigureImages = null;
 let originalKeyImages = null;
 let pendingFigureUpload = null;
@@ -1609,18 +1612,25 @@ function applyFigureOverrides(rows) {
 
 async function loadFigureAssets() {
   const client = accountStatus.client;
-  if (!client) return;
+  if (!client) {
+    figureAssetsReady = true;
+    render();
+    return;
+  }
   const request = ++figureAssetsRequest;
   const {data,error} = await client.from('figure_overrides')
     .select('target_type,target_id,slot_key,storage_path,updated_at');
   if (request !== figureAssetsRequest) return;
   if (error) {
-    // The editor can be prepared locally before the database migration is applied.
-    if (accountStatus.figureAdmin) announceFigureAdmin('No se pudieron cargar las imágenes actualizadas.',true);
+    announceFigureAdmin('No se pudieron cargar las imágenes actualizadas. Recarga la página para reintentar.',true);
+    figureAssetsReady = true;
+    render();
     return;
   }
   applyFigureOverrides(data || []);
+  figureAssetsReady = true;
   render();
+  if (keyState.path.length) focusKeyStep();
 }
 
 async function refreshFigureEditorAccess() {
@@ -4113,6 +4123,10 @@ function getRoute() {
 }
 
 function render({ focus = false } = {}) {
+  if (!figureAssetsReady) {
+    app.innerHTML = '<div class="container mainspace"><p class="figure-loading" role="status">Cargando las figuras actualizadas…</p></div>';
+    return;
+  }
   const restoredScroll = scrollPositions.get(location.hash);
   const nextRoute = getRoute();
   if (nextRoute.join('/') !== route?.join('/')) {
@@ -4888,7 +4902,7 @@ window.addEventListener('hashchange', () => {
   render({ focus:true });
 });
 render();
-if (keyState.path.length) focusKeyStep();
+if (figureAssetsReady && keyState.path.length) focusKeyStep();
 initializeAccount();
 </script>
 </body>
