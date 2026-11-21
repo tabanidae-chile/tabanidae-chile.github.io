@@ -1084,6 +1084,43 @@ select:not([multiple]){
 .network-links li .secondary{margin-left:auto;padding:4px 9px;font-size:12px}
 @media(max-width:760px){.network-toolbar{grid-template-columns:1fr}}
 
+/* Controles compartidos de búsqueda */
+.searchfield{display:block;position:relative;order:10;flex:1 1 100%;min-width:min(220px,100%)}
+.searchfield input[type="search"]{padding-right:43px;appearance:none}
+.searchfield input[type="search"]::-webkit-search-cancel-button{display:none}
+.search-clear,.hero-search .search-clear{position:absolute;z-index:1;top:50%;right:7px;transform:translateY(-50%);display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:7px;background:transparent;color:#60776b;font-size:21px;font-weight:500;line-height:1}
+.search-clear:hover,.hero-search .search-clear:hover{background:#e9f1e9;color:var(--pine)}
+.searchfield input:placeholder-shown + .search-clear{visibility:hidden;pointer-events:none}
+.hero-search .searchfield{order:0;flex:1 1 auto;min-width:0}
+.hero-search .searchfield input{width:100%}
+.hero-search .search-clear{right:4px}
+.hero--refresh .hero-search .search-clear{width:30px;height:30px;padding:0;border:0;border-radius:7px;background:transparent;color:#60776b;font-size:21px;font-weight:500}
+.hero--refresh .hero-search .search-clear:hover{background:#e9f1e9;color:var(--pine)}
+.record-list .figure-toolbar{display:flex;align-items:stretch}
+.figure-filters{order:0;flex:1 1 100%;grid-column:auto;grid-row:auto}
+.figure-filter-fields{margin-top:0}
+.figure-toolbar .searchfield{order:1;flex:1 1 100%}
+.morphology-glossary .toolbar .searchfield{order:0;flex:1 1 300px}
+.morphology-glossary .toolbar [data-glossary-toggle]{order:1}
+.filter-checks{display:flex;flex-wrap:wrap;gap:7px 17px;align-items:center;width:100%}
+.filter-check{display:inline-flex;gap:7px;align-items:center;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#f8faf7;color:var(--pine);font-size:12px;font-weight:650;cursor:pointer}
+.filter-check input{accent-color:var(--pine2);width:16px;height:16px;margin:0}
+.key-card-chile--absent{background:#fbe9e8;color:#a6373b}
+.key-card-chile--absent:focus-visible::after{background:#85383b}
+.network-toolbar{display:block}
+.network-search-label{display:block;width:100%;font-size:12px;font-weight:700;color:var(--pine)}
+.network-search-label .searchfield{display:block;margin-top:5px;width:100%}
+.network-viewport{position:relative}
+.network-side-toggle{position:absolute;top:9px;z-index:2;border:1px solid #c3d8c8;border-radius:8px;background:#fff;color:var(--pine);padding:5px 9px;font-size:12px;font-weight:750}
+.network-side-toggle--incoming{left:9px}.network-side-toggle--outgoing{right:9px}
+.network-side-toggle[aria-pressed="false"]{background:#e8eee8;color:#687b6d}
+.network-edge{stroke:#38745c;stroke-dasharray:none}.network-viewport marker path{fill:#38745c}
+.bib-network-action{margin:7px 0 9px}.bib-network-action .secondary{padding:6px 10px}
+.foot .container{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.foot nav{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap}
+.foot nav a{white-space:nowrap}
+@media(max-width:640px){.filter-checks{gap:7px}.filter-check{flex:1 1 auto;justify-content:center}.network-side-toggle{font-size:11px}.foot nav{gap:15px}}
+
 </style>
 <meta name="google-site-verification" content="5fsbY0bPepIuGt_-xXStZLNCJZqJ9mC0oqZ8wUhfQOs" /></head>
 <body>
@@ -1104,7 +1141,7 @@ select:not([multiple]){
   </header>
   <main id="app" tabindex="-1"></main>
   <noscript><p class="container">Activa JavaScript para consultar el catálogo y recorrer sus fichas.</p></noscript>
-  <footer class="foot"><div class="container"><span>Tabanidae de Chile · Catálogo documental</span><a href="#/acerca">Acerca del catálogo</a><a href="privacidad.html">Privacidad</a></div></footer>
+  <footer class="foot"><div class="container"><span>Tabanidae de Chile · Catálogo documental</span><nav aria-label="Enlaces del pie de página"><a href="#/acerca">Acerca del catálogo</a><a href="privacidad.html">Privacidad</a></nav></div></footer>
   <dialog id="name-dialog" class="historical-dialog" aria-labelledby="dialog-title"></dialog>
   <dialog id="specimen-dialog" class="historical-dialog" aria-labelledby="specimen-dialog-title"></dialog>
   <dialog id="article-access-dialog" class="article-access-dialog" aria-labelledby="article-access-title">
@@ -1950,8 +1987,8 @@ const text = value => escape(value) || 'No documentado';
 const line = (name, value) => [name, linkedScientificText(value)];
 const details = entries => `<dl class="data-list">${entries.filter(([, value]) => value).map(([name, value]) =>
   `<div class="kv"><dt>${escape(name)}</dt><dd>${value}</dd></div>`).join('')}</dl>`;
-const heading = (title, summary, eyebrow = 'Catálogo científico · Chile', crumbs = '') => `<header class="pageheading">${crumbs ? `<div class="crumb">${crumbs}</div>` : ''}
-  <div class="eyebrow">${escape(eyebrow)}</div><h1>${title}</h1>${summary ? `<p>${summary}</p>` : ''}</header>`;
+const heading = (title, summary, _eyebrow = '', crumbs = '') => `<header class="pageheading">${crumbs ? `<div class="crumb">${crumbs}</div>` : ''}
+  <h1>${title}</h1>${summary ? `<p>${summary}</p>` : ''}</header>`;
 const section = (title, body) => `<section class="section"><div class="sect-head"><h2>${escape(title)}</h2></div>${body}</section>`;
 const tabs = (options, value) => `<div class="tabs" aria-label="Vistas">${options.map(([id, label, url]) =>
   `<a href="${url}"${id === value ? ' aria-current="page"' : ''}>${escape(label)}</a>`).join('')}</div>`;
@@ -2020,7 +2057,7 @@ function optionList(items, selected) {
   }).join('');
 }
 
-function mountList(id, rows, render, { search = 'Buscar en los registros', filters = [], sorts = [], grid = '', pageSize = 24, alphabet, columns, tableLabel = 'Registros de distribución', tableClass = 'geo-table', beforeResults = '', onRefresh, figureList = false, extraControls = '' } = {}) {
+function mountList(id, rows, render, { search = 'Buscar en los registros', filters = [], checkboxes = [], sorts = [], grid = '', pageSize = 24, alphabet, columns, tableLabel = 'Registros de distribución', tableClass = 'geo-table', beforeResults = '', onRefresh, figureList = false, extraControls = '' } = {}) {
   const query = hashQuery();
   const previous = groups.get(id);
   const state = !query.size && previous || {q:query.get('q') || '', page:Math.max(0,(parseInt(query.get('pagina'),10) || 1) - 1),
@@ -2030,15 +2067,16 @@ function mountList(id, rows, render, { search = 'Buscar en los registros', filte
     const value = query.get('f-' + f.key);
     if (f.options.some(o => (Array.isArray(o) ? o[0] : o) === value)) state.filters[f.key] = value;
   }
-  if (figureList) state.filtersOpen = previous?.filtersOpen ?? matchMedia('(min-width: 701px)').matches;
+  for (const f of checkboxes) state.filters[f.key] = query.get('f-' + f.key) === 'yes' ? 'yes' : (state.filters[f.key] || '');
   groups.set(id, state);
-  currentList = { id, rows, render, state, filters, sorts, grid, pageSize, alphabet, columns, tableLabel, tableClass, onRefresh, figureList };
+  currentList = { id, rows, render, state, filters, checkboxes, sorts, grid, pageSize, alphabet, columns, tableLabel, tableClass, onRefresh, figureList };
   const controls = filters.map(f => `<select aria-label="${escape(f.label)}" data-list-filter="${f.key}">${optionList(f.options, state.filters[f.key] ?? '')}</select>`).join('') +
     (sorts.length ? `<select aria-label="Orden" data-list-sort>${optionList(sorts,state.sort)}</select>` : '');
+  const checks = checkboxes.length ? `<div class="filter-checks">${checkboxes.map(f => `<label class="filter-check"><input type="checkbox" data-list-checkbox="${f.key}"${state.filters[f.key] === 'yes' ? ' checked' : ''}><span>${escape(f.label)}</span></label>`).join('')}</div>` : '';
   const listClass = id === 'global-evidence' ? ' bibliography-evidence' : '';
-  return `<div class="record-list${listClass}"><div class="toolbar${figureList ? ' figure-toolbar' : ''}"><label class="searchfield"><input type="search" data-list-query value="${escape(state.q)}" placeholder="${escape(search)}" aria-label="Buscar"></label>
-    ${figureList ? `<details class="figure-filters"${state.filtersOpen ? ' open' : ''}><summary>Filtros <span data-filter-count></span></summary><div class="figure-filter-fields">${controls}</div></details>` : controls}
-    <button type="button" class="btn-ghost" data-clear-list>Limpiar</button>${extraControls}</div>
+  return `<div class="record-list${listClass}"><div class="toolbar${figureList ? ' figure-toolbar' : ''}"><label class="searchfield"><input type="search" data-list-query value="${escape(state.q)}" placeholder="${escape(search)}" aria-label="Buscar"><button type="button" class="search-clear" data-search-clear aria-label="Borrar búsqueda" title="Borrar búsqueda">×</button></label>
+    ${figureList ? `<div class="figure-filters"><div class="figure-filter-fields">${controls}</div></div>` : controls}
+    ${checks}${extraControls}</div>
     ${alphabet ? `<div id="list-alpha" class="alpha-nav" aria-label="${alphabet.label}"></div>` : ''}
     ${beforeResults}<div id="list-count" class="result-meta" role="status" tabindex="-1"></div><div id="list-body"></div><div id="list-pager" class="pager"></div></div>`;
 }
@@ -2046,9 +2084,10 @@ function mountList(id, rows, render, { search = 'Buscar en los registros', filte
 function refreshList(scroll = false) {
   const list = currentList;
   if (!list) return;
-  const { rows, state, filters, sorts, grid, render, pageSize, alphabet, columns, tableLabel, tableClass, figureList } = list;
+  const { rows, state, filters, checkboxes, sorts, grid, render, pageSize, alphabet, columns, tableLabel, tableClass, figureList } = list;
   const base = rows.filter(row => matching(row, state.q) && filters.every(f =>
-    !state.filters[f.key] || f.match(row, state.filters[f.key], state.filters)));
+    !state.filters[f.key] || f.match(row, state.filters[f.key], state.filters)) &&
+    checkboxes.every(f => state.filters[f.key] !== 'yes' || f.match(row)));
   if (alphabet) document.getElementById('list-alpha').innerHTML = alphaIndex('list',alphabet.label,
     base.map(row => initial(alphabet.value(row))),'filtro',state.letter || '');
   const filtered = !alphabet || !state.letter ? base : base.filter(row => initial(alphabet.value(row)) === state.letter);
@@ -2070,12 +2109,13 @@ function refreshList(scroll = false) {
     `<button class="secondary" data-page="-1"${!state.page ? ' disabled' : ''}>Anterior</button>
     <span>Página ${state.page + 1} de ${pages}</span><button class="secondary" data-page="1"${state.page === pages - 1 ? ' disabled' : ''}>Siguiente</button>` : '';
   const query = hashQuery();
-  for (const key of ['q','pagina','orden','inicial',...filters.map(f => 'f-' + f.key)]) query.delete(key);
+  for (const key of ['q','pagina','orden','inicial',...filters.map(f => 'f-' + f.key),...checkboxes.map(f => 'f-' + f.key)]) query.delete(key);
   if (state.q) query.set('q',state.q);
   if (state.page) query.set('pagina',String(state.page + 1));
   if (state.sort && state.sort !== sorts[0]?.[0]) query.set('orden',state.sort);
   if (state.letter) query.set('inicial',state.letter);
   for (const f of filters) if (state.filters[f.key]) query.set('f-' + f.key,state.filters[f.key]);
+  for (const f of checkboxes) if (state.filters[f.key] === 'yes') query.set('f-' + f.key,'yes');
   replaceHashQuery(query);
   if (list.id === 'keys') {
     keyListHref = location.hash;
@@ -2084,7 +2124,7 @@ function refreshList(scroll = false) {
   }
   const counter = app.querySelector('[data-filter-count]');
   if (counter) {
-    const active = filters.filter(f => f.key !== 'view' && state.filters[f.key]).length;
+    const active = filters.filter(f => f.key !== 'view' && state.filters[f.key]).length + checkboxes.filter(f => state.filters[f.key] === 'yes').length;
     counter.textContent = active ? '(' + num(active) + ')' : '';
   }
   if (scroll) document.getElementById('list-count').scrollIntoView({ block: 'center' });
@@ -2135,7 +2175,7 @@ function renderHome() {
       <div class="hero-motif hero-motif--map" id="hero-map" aria-hidden="true"></div>
       <div class="hero-copy"><h1>Tabanidae<br>de Chile</h1><p>Catálogo taxonómico y documental de los tábanos registrados en Chile.</p>
         <form class="hero-search" id="home-search"><span class="search-magnifier" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></span>
-          <input type="search" id="homeSearch" placeholder="Busca especies, géneros o nombres históricos…" aria-label="Buscar en el catálogo">
+          <label class="searchfield"><input type="search" id="homeSearch" placeholder="Busca especies, géneros o nombres históricos…" aria-label="Buscar en el catálogo"><button type="button" class="search-clear" data-search-clear aria-label="Borrar búsqueda" title="Borrar búsqueda">×</button></label>
           <button type="submit">Buscar ↗</button></form>
       </div><div class="tabanid-hero-blank" aria-hidden="true"></div>
     </div>
@@ -2271,11 +2311,10 @@ function speciesView(mode = '') {
     const opts = (field,label) => [['',label],...[...new Set(subset.map(t => t[field]).filter(Boolean))].sort(collator.compare)];
     list = `<div id="taxon-view" data-mode="${current}">
       <div class="toolbar"><label class="searchfield"><input id="speciesSearch" type="search" aria-label="Buscar especies"
-        placeholder="Nombre científico, sinónimo, autor o año…" value="${escape(state.q)}"></label>
+        placeholder="Nombre científico, sinónimo, autor o año…" value="${escape(state.q)}"><button type="button" class="search-clear" data-search-clear aria-label="Borrar búsqueda" title="Borrar búsqueda">×</button></label>
         <select id="speciesSub" aria-label="Subfamilia">${optionList(opts('subfamilia','Todas las subfamilias'),state.sub)}</select>
         <select id="speciesGen" aria-label="Género">${optionList(opts('genero','Todos los géneros'),state.gen)}</select>
         <select id="speciesSort" aria-label="Orden de las especies">${optionList(speciesOrders,state.order)}</select>
-        <button type="button" class="btn-ghost" data-reset-species>Limpiar</button>
       </div><div id="species-index" class="alpha-nav" aria-label="Índice de especies"></div>
       <div id="list-count" class="result-meta" role="status"></div><div id="species-list"></div></div>`;
   }
@@ -2470,7 +2509,7 @@ function nomenclatureSummary(t, treatments) {
       ${used.has(entry.key) ? `<button type="button" class="btn-ghost" data-show-name="${escape(entry.key)}">Ver usos →</button>` : ''}</li>`;
   }).join('');
   return rows ? description('Resumen de nomenclatura',
-    '<p class="small muted">Nombre del catálogo, combinación original, sinónimos consignados y otros nombres usados en la bibliografía.</p>' +
+    '<p class="small muted">Nombre válido, combinación original, sinónimos consignados y otros nombres usados en la bibliografía.</p>' +
     '<ul class="nomenclature-summary">' + rows + '</ul>') : '';
 }
 
@@ -2707,7 +2746,6 @@ function evidenceView(row) {
 function bibliographyTabs(active) {
   return `<div class="bib-subnav" aria-label="Vistas de la bibliografía">${[
     ['publicaciones','Publicaciones',href('bibliografia'),db.counts.publicaciones],
-    ['red','Red de citas',href('bibliografia','red')],
     ['evidencias','Todas las evidencias',href('bibliografia','evidencias-globales'),evidence.length],
     ['figuras','Índice de figuras',href('bibliografia','figuras'),db.counts.figuras],
     ['observaciones','Observaciones y discrepancias',href('bibliografia','observaciones'),db.counts.incidencias],
@@ -2791,9 +2829,8 @@ function observationsView() {
     });
 }
 
-const networkDirections = [['ambas','Ambas direcciones'],['entrantes','Trabajos que la citan'],['salientes','Trabajos que cita']];
-const networkSources = [['todas','Auditoría e inventario'],['auditoria','Citas auditadas'],['inventario','Vínculos adicionales del inventario']];
 let citationNetwork;
+const networkSides = {incoming:true,outgoing:true};
 
 function getCitationNetwork() {
   if (citationNetwork) return citationNetwork;
@@ -2826,12 +2863,7 @@ function getCitationNetwork() {
 
 const networkLabel = id => apaLabel(id) || clean(pubById[id].autores) || pubById[id].titulo || id;
 
-function networkUrl(id, direction = 'ambas', source = 'todas') {
-  const query = new URLSearchParams();
-  if (direction !== 'ambas') query.set('direccion',direction);
-  if (source !== 'todas') query.set('origen',source);
-  return href('bibliografia','red',id) + (query.size ? '?' + query : '');
-}
+const networkUrl = id => href('bibliografia','red',id);
 
 function searchNetwork(input) {
   const terms = norm(input.value).split(/\s+/).filter(Boolean);
@@ -2841,15 +2873,13 @@ function searchNetwork(input) {
   const matches = db.publicaciones.filter(p => terms.every(term => citationMeta[p.id].search.includes(term)));
   matches.sort((a,b) => Number(norm(b.id) === norm(input.value)) - Number(norm(a.id) === norm(input.value)) ||
     collator.compare(networkLabel(a.id),networkLabel(b.id)));
-  const direction = document.getElementById('network-direction').value;
-  const source = document.getElementById('network-source').value;
   results.innerHTML = matches.length ? `<p class="small" role="status">${num(matches.length)} publicaciones encontradas${matches.length > 8 ? ' · se muestran 8' : ''}</p>
-    <ul>${matches.slice(0,8).map(p => `<li><a href="${escape(networkUrl(p.id,direction,source))}">
+    <ul>${matches.slice(0,8).map(p => `<li><a href="${escape(networkUrl(p.id))}">
       <strong>${escape(networkLabel(p.id))}</strong><span>${escape(p.titulo)}</span></a></li>`).join('')}</ul>` :
     '<p class="small" role="status">Sin coincidencias.</p>';
 }
 
-function networkDiagram(id, incoming, outgoing, direction, source) {
+function networkDiagram(id, incoming, outgoing) {
   const limit = 9;
   const idsIn = incoming.slice(0,limit).map(edge => edge.from);
   const idsOut = outgoing.filter(edge => !idsIn.includes(edge.to)).slice(0,limit).map(edge => edge.to);
@@ -2857,9 +2887,9 @@ function networkDiagram(id, incoming, outgoing, direction, source) {
   const height = Math.max(310,Math.max(idsIn.length,idsOut.length) * 42 + 80);
   const center = height/2;
   const place = (ids,x) => ids.map((node,i) => ({node,x,y:ids.length > 1 ? 62 + i * (height - 102)/(ids.length - 1) : center}));
-  const nodes = [...place(idsIn,12),...place(idsOut,660)];
+  const nodes = [...place(idsIn,idsOut.length ? 12 : 150),...place(idsOut,idsIn.length ? 660 : 522)];
   const nodeWidth = 228;
-  const centerX = 450;
+  const centerX = idsIn.length && !idsOut.length ? 635 : idsOut.length && !idsIn.length ? 265 : 450;
   const centerHalf = 117;
   function pathFor(node,edge,inward,offset) {
     if (!edge) return '';
@@ -2871,7 +2901,7 @@ function networkDiagram(id, incoming, outgoing, direction, source) {
     const midY = center + offset;
     const path = inward ? `M ${near},${y} C ${bend},${y} ${bend},${midY} ${middle},${midY}` :
       `M ${middle},${midY} C ${bend},${midY} ${bend},${y} ${near},${y}`;
-    return `<path class="network-edge network-edge--${edge.source}" d="${path}" marker-end="url(#network-arrow-${edge.source})"/>`;
+    return `<path class="network-edge" d="${path}" marker-end="url(#network-arrow)"/>`;
   }
   const edgesIn = new Map(incoming.map(edge => [edge.from,edge]));
   const edgesOut = new Map(outgoing.map(edge => [edge.to,edge]));
@@ -2881,19 +2911,21 @@ function networkDiagram(id, incoming, outgoing, direction, source) {
     return pathFor(node,into,true,out ? -5 : 0) + pathFor(node,out,false,into ? 5 : 0);
   }).join('');
   const shorten = label => label.length > 31 ? label.slice(0,29).trimEnd() + '…' : label;
-  const marker = key => `<marker id="network-arrow-${key}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path class="network-arrow--${key}" d="M0,0 L10,5 L0,10 Z"/></marker>`;
+  const marker = `<marker id="network-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 Z"/></marker>`;
   return `<div class="network-viewport" role="region" aria-label="Diagrama de citas directas" tabindex="0">
+    <button type="button" class="network-side-toggle network-side-toggle--incoming" data-network-side="incoming" aria-pressed="${networkSides.incoming}" title="${networkSides.incoming ? 'Ocultar' : 'Mostrar'} trabajos que citan esta publicación">${networkSides.incoming ? '−' : '+'} Citan</button>
+    <button type="button" class="network-side-toggle network-side-toggle--outgoing" data-network-side="outgoing" aria-pressed="${networkSides.outgoing}" title="${networkSides.outgoing ? 'Ocultar' : 'Mostrar'} trabajos citados por esta publicación">Cita ${networkSides.outgoing ? '−' : '+'}</button>
     <svg viewBox="0 0 900 ${height}" aria-labelledby="network-diagram-title">
       <title id="network-diagram-title">Red de citas de ${escape(networkLabel(id))}</title>
-      <defs>${marker('auditoria')}${marker('inventario')}</defs>
+      <defs>${marker}</defs>
       <text class="network-side-label" x="126" y="28" text-anchor="middle">${idsIn.length ? 'Trabajos que la citan' : ''}</text>
       <text class="network-side-label" x="774" y="28" text-anchor="middle">${idsOut.length ? 'Trabajos que cita' : ''}</text>
       <g aria-hidden="true">${connectors}</g>
       <g class="network-center"><rect x="${centerX-centerHalf}" y="${center-33}" width="${centerHalf*2}" height="66" rx="12"/>
         <text x="${centerX}" y="${center-8}" text-anchor="middle">Publicación seleccionada</text>
         <text x="${centerX}" y="${center+14}" text-anchor="middle">${escape(shorten(networkLabel(id)))}</text></g>
-      ${nodes.map(({node,x,y}) => `<a class="network-node" href="${escape(networkUrl(node,direction,source))}"
+      ${nodes.map(({node,x,y}) => `<a class="network-node" href="${escape(networkUrl(node))}"
         aria-label="Centrar en ${escape(networkLabel(node) + ' · ' + pubById[node].titulo)}"><title>${escape(pubById[node].titulo)}</title>
         <rect x="${x}" y="${y-15}" width="${nodeWidth}" height="30" rx="7"/>
         <text x="${x+nodeWidth/2}" y="${y+4}" text-anchor="middle">${escape(shorten(networkLabel(node)))}</text></a>`).join('')}
@@ -2901,39 +2933,33 @@ function networkDiagram(id, incoming, outgoing, direction, source) {
       `<p class="small muted">El diagrama muestra ${num(shown.size)} publicaciones. La lista inferior incluye todas las coincidencias.</p>` : ''}`;
 }
 
-function networkResults(id,direction,source) {
-  const edges = getCitationNetwork().byPublication.get(id).filter(edge => source === 'todas' || source === edge.source);
+function networkResults(id) {
+  const edges = getCitationNetwork().byPublication.get(id);
   const sortBy = field => (a,b) => collator.compare(networkLabel(a[field]),networkLabel(b[field])) || collator.compare(a[field],b[field]);
-  const incoming = direction === 'salientes' ? [] : edges.filter(edge => edge.to === id).sort(sortBy('from'));
-  const outgoing = direction === 'entrantes' ? [] : edges.filter(edge => edge.from === id).sort(sortBy('to'));
+  const incoming = networkSides.incoming ? edges.filter(edge => edge.to === id).sort(sortBy('from')) : [];
+  const outgoing = networkSides.outgoing ? edges.filter(edge => edge.from === id).sort(sortBy('to')) : [];
   function list(title,items,field) {
     return description(title + ' · ' + num(items.length),items.length ? `<ul class="network-links">
       ${items.map(edge => {
         const other = edge[field];
         return `<li>${anchor(escape(networkLabel(other)),href('bibliografia',other),'ref-citation')}
           <span class="small muted">${edge.source === 'auditoria' ? 'Auditoría' : 'Inventario'}</span>
-          ${anchor('Centrar →',networkUrl(other,direction,source),'secondary')}</li>`;
+          ${anchor('Centrar →',networkUrl(other),'secondary')}</li>`;
       }).join('')}</ul>` : empty('Sin citas registradas para esta dirección con los filtros actuales.'));
   }
-  return `<p class="small network-count" role="status">${num(incoming.length + outgoing.length)} vínculos con los filtros actuales</p>
-    ${incoming.length || outgoing.length ? networkDiagram(id,incoming,outgoing,direction,source) : empty('Sin vínculos con los filtros actuales. Puedes cambiar los filtros o buscar otra publicación.')}
-    <div class="network-lists">${direction === 'salientes' ? '' : list('Trabajos que la citan',incoming,'from')}
-    ${direction === 'entrantes' ? '' : list('Trabajos que cita',outgoing,'to')}</div>`;
+  return `${networkDiagram(id,incoming,outgoing)}
+    <div class="network-lists">${networkSides.incoming ? list('Trabajos que la citan',incoming,'from') : ''}
+    ${networkSides.outgoing ? list('Trabajos que cita',outgoing,'to') : ''}</div>`;
 }
 
 function citationNetworkView(id) {
-  const {start,total} = getCitationNetwork();
+  const {start} = getCitationNetwork();
   if (id && !Object.hasOwn(pubById,id)) return notFound();
   id ||= start;
-  const query = hashQuery();
-  const direction = networkDirections.find(([value]) => value === query.get('direccion'))?.[0] || 'ambas';
-  const source = networkSources.find(([value]) => value === query.get('origen'))?.[0] || 'todas';
   return heading('Red de citas bibliográficas','Explora las citas entre publicaciones del catálogo. Cada flecha apunta hacia el trabajo citado.','Bibliografía') +
-    bibliographyTabs('red') + `<div id="citation-network" data-publication="${escape(id)}">
+    bibliographyTabs('publicaciones') + `<div id="citation-network" data-publication="${escape(id)}">
       <div class="toolbar network-toolbar">
-        <label>Buscar publicación<input type="search" class="input" id="network-search" placeholder="Autor, año, título o código" aria-controls="network-search-results"></label>
-        <label>Dirección<select id="network-direction">${optionList(networkDirections,direction)}</select></label>
-        <label>Procedencia<select id="network-source">${optionList(networkSources,source)}</select></label>
+        <label class="network-search-label">Buscar publicación<span class="searchfield"><input type="search" id="network-search" placeholder="Autor, año o título" aria-controls="network-search-results"><button type="button" class="search-clear" data-search-clear aria-label="Borrar búsqueda" title="Borrar búsqueda">×</button></span></label>
       </div>
       <div id="network-search-results" class="network-search-results" hidden></div>
       <div class="infoblock network-overview">
@@ -2942,9 +2968,7 @@ function citationNetworkView(id) {
         <div class="actions">${anchor('Abrir ficha',href('bibliografia',id),'secondary')}
           ${anchor('Ver citas documentales',href('bibliografia',id,'citas'),'secondary')}</div>
       </div>
-      <div class="network-legend" aria-label="Leyenda"><span><i></i>Cita auditada</span><span><i></i>Vínculo adicional del inventario</span>
-        <span>${num(total)} vínculos en la red completa</span></div>
-      <div id="network-results">${networkResults(id,direction,source)}</div>
+      <div id="network-results">${networkResults(id)}</div>
     </div>`;
 }
 
@@ -3000,6 +3024,7 @@ function sourceCard(p) {
     <h3>${text(p.titulo)}</h3>
     <p><strong>${escape(p.autores) || 'Autoría no documentada'}</strong> · ${escape(p.anio) || 's. f.'}
       ${p.revista ? ' · ' + escape(p.revista) : ''}${volume}${pageRange}</p>
+    <div class="bib-network-action">${anchor('Ver red de citas →',networkUrl(p.id),'secondary')}</div>
     <details class="refdetails"><summary>Evidencias y especies asociadas</summary>
       <div class="ref-short-details">
         <div><strong>Evidencias registradas:</strong> ${evLink}</div>
@@ -3039,10 +3064,9 @@ function bibliographyList() {
   if (!refAvailability.some(([id]) => id === refState.availability)) refState.availability = '';
   return heading('Bibliografía documental') + bibliographyTabs('publicaciones') +
     `<div class="toolbar"><label class="searchfield"><input id="refSearch" type="search" aria-label="Buscar publicaciones"
-      placeholder="Autores, año, título, revista…" value="${escape(refState.q)}"></label>
+      placeholder="Autores, año, título, revista…" value="${escape(refState.q)}"><button type="button" class="search-clear" data-search-clear aria-label="Borrar búsqueda" title="Borrar búsqueda">×</button></label>
       <select id="refAvail" aria-label="Disponibilidad">${optionList(refAvailability,refState.availability)}</select>
       <select id="refSort" aria-label="Ordenar bibliografía">${optionList(refOrders,refState.order)}</select>
-      <button type="button" class="btn-ghost" data-reset-refs>Limpiar</button>
     </div>${reviewLegend()}
     <div class="alpha-nav" id="ref-index" aria-label="Índice de autores"></div>
     <div id="ref-meta" class="result-meta" role="status"></div><div id="ref-list"></div><div id="copy-status" class="copy-status" role="status"></div>` +
@@ -3375,15 +3399,15 @@ function adultMorphologyView() {
 }
 
 const larvalMorphologyGroups = [
-  ['cabeza','Cápsula cefálica, antenas y palpos',row => /C382/.test(row.id) && [1,3,4,5].includes(Number(row.id.slice(-3))) || /C383/.test(row.id) && [1,2].includes(Number(row.id.slice(-3))) || row.id === 'FIG-C384-002'],
-  ['boca','Piezas bucales y mandíbulas',row => /C382/.test(row.id) && [2,6].includes(Number(row.id.slice(-3))) || row.id === 'FIG-C383-003' || /C384/.test(row.id) && [1,3,4,5,6].includes(Number(row.id.slice(-3)))],
+  ['cabeza','Cabeza',row => /C382/.test(row.id) && [1,2,3,4,5,6].includes(Number(row.id.slice(-3))) || /C383/.test(row.id) && [1,2].includes(Number(row.id.slice(-3))) || /C384/.test(row.id) && [1,2,3,4,5,6].includes(Number(row.id.slice(-3)))],
   ['cuerpo','Cuerpo larval y locomoción',row => row.id === 'FIG-C382-007' || /C384/.test(row.id) && [7,8,9,10,11,12].includes(Number(row.id.slice(-3)))],
   ['respiracion','Sistema traqueal y espiráculos',row => row.id === 'FIG-C382-008' || /C383/.test(row.id) && [4,5,6,7,8].includes(Number(row.id.slice(-3))) || /C384/.test(row.id) && [13,14].includes(Number(row.id.slice(-3)))],
   ['pupas','Pupas: anatomía comparada',row => /C382/.test(row.id) && [9,10,11].includes(Number(row.id.slice(-3)))],
 ];
 
 function larvalMorphologyView() {
-  const rows = db.figuras.filter(row => ['C382','C383','C384'].includes(row.ref));
+  const excluded = new Set(['FIG-C383-003','FIG-C384-014']);
+  const rows = db.figuras.filter(row => ['C382','C383','C384'].includes(row.ref) && !excluded.has(row.id) && row.figura !== 'Fig. 4.57');
   const source = ['C382','C383','C384'];
   const groups = larvalMorphologyGroups.map(([id,title,select]) => [id,title,rows.filter(select)]);
   const assigned = new Set(groups.flatMap(([, ,items]) => items.map(row => row.id)));
@@ -3405,13 +3429,14 @@ function larvalMorphologyView() {
       <p>Las ${rows.length} figuras proceden de ${source.map(id => apaLink(id)).join(', ')}. Muestran estructuras de distintas especies y géneros, principalmente neárticos, y algunas comparaciones generales de Diptera. Son referencias anatómicas; no constituyen por sí solas un registro de presencia en Chile.</p>
       <p>Las tres imágenes de pupas se presentan por separado. Las abreviaturas se indican cuando pudieron cotejarse con las leyendas de la publicación.</p></div>
     <nav class="morphology-index" aria-label="Estructuras larvales">${groups.map(([id,title]) => anchor(escape(title),href('morfologia','larvas',id),'secondary')).join('')}${anchor('Índice de abreviaturas',href('morfologia','larvas','abreviaturas'),'secondary')}</nav>
-    <details class="section morphology-glossary" id="morphology-larvas-abreviaturas" tabindex="-1"${route?.[2] === 'abreviaturas' ? ' open' : ''}>
-      <summary>Índice de abreviaturas larvales</summary>
+    <section class="section morphology-glossary" id="morphology-larvas-abreviaturas" tabindex="-1" data-glossary-open="${route?.[2] === 'abreviaturas'}">
+      <div class="sect-head"><h2>Índice de estructuras larvales</h2></div>
       <p class="small muted">Rótulos cotejados con las leyendas de ${apaLink('C383')} y ${apaLink('C384')}; una leyenda compartida puede incluir códigos ausentes en un recorte individual.</p>
       ${mountList('larval-morphology-glossary',terms.map(term => ({...term,busqueda:term.code + ' ' + term.meaning})),term =>
         `<tr><td><strong>${escape(term.code)}</strong></td><td>${escape(term.meaning)}</td><td>${[...term.figures].map(([id,label]) => eLink(evidenceById[id],label)).join(' · ')}</td></tr>`,
-        {search:'Buscar abreviatura o estructura larval',columns:['Abreviatura','Estructura','Figuras'],tableLabel:'Abreviaturas larvales',pageSize:80})}
-    </details>
+        {search:'Buscar abreviatura o estructura larval',columns:['Abreviatura','Estructura','Figuras'],tableLabel:'Abreviaturas larvales',tableClass:'morphology-glossary-table',pageSize:80,
+        extraControls:`<button type="button" class="secondary" data-glossary-toggle aria-expanded="${route?.[2] === 'abreviaturas'}">${route?.[2] === 'abreviaturas' ? 'Ocultar estructuras' : 'Ver todas las estructuras'}</button>`})}
+    </section>
     ${groups.map(([id,title,items]) => `<section class="section morphology-group" id="morphology-larvas-${id}" tabindex="-1">
       <div class="sect-head"><h2>${escape(title)}</h2></div>
       <div class="grid morphology-figures">${items.map(row => `<article class="card figure-card">
@@ -3626,7 +3651,7 @@ function displayMap() {
 function keyCard(key) {
   return `<article class="key-source">
     <div class="key-card-heading"><h3>${text(key.tituloEs)}</h3>
-      <div class="key-card-flags">${key.terminales.length ? '<span class="key-card-chile" role="img" tabindex="0" aria-label="Contiene terminales presentes en Chile" title="Contiene terminales presentes en Chile">✓</span>' : ''}
+      <div class="key-card-flags">${key.terminales.length ? '<span class="key-card-chile" role="img" tabindex="0" aria-label="Contiene terminales presentes en Chile" title="Contiene terminales presentes en Chile">✓</span>' : '<span class="key-card-chile key-card-chile--absent" role="img" tabindex="0" aria-label="Sin terminales presentes en Chile" title="Sin terminales presentes en Chile">✕</span>'}
         ${favoriteKeyButton(key.id)}</div></div>
     <div class="key-source-meta">${speciesSource(key)}</div>
     <div class="key-source-context"><strong>Alcance</strong> · ${linkedTaxonCodeText(key.alcance)}
@@ -3696,10 +3721,6 @@ function keysView() {
         ['count-asc','Menos terminales primero',byCount]],
       filters:[
         ...compatibility,
-        {key:'favorite',label:'Claves favoritas',options:[['','Todas las claves'],['yes','Solo favoritas']],match:key => favoriteKeys.has(key.id)},
-        {key:'mode',label:'Terminales en Chile',options:[['','Todas las claves'],['chile','Con terminales de Chile']],match:r => r.terminales.length > 0},
-        {key:'figures',label:'Figuras en los enunciados',options:[['','Con y sin figuras'],['yes','Con figuras citadas'],['no','Sin figuras citadas']],
-          match:(r,v) => r.registros.some(row => row.figuras) === (v === 'yes')},
         {key:'rank',label:'Rango de los terminales',options:[['','Todos los rangos'],['subfamilia','Subfamilia'],
           ['tribu','Tribu'],['genero','Género'],['subgenero','Subgénero'],['grupo','Grupo de especies'],
           ['especie','Especie'],['subespecie','Subespecie'],['variedad','Variedad']],match:(key,rank) =>
@@ -3708,6 +3729,11 @@ function keysView() {
           ['Pangoniinae','Solo Pangoniinae'],['Tabaninae','Solo Tabaninae']],match:(r,v) => r.subfamiliaTerminales === v},
         {key:'stage',label:'Sexo o estadio',options:[['','Todos los sexos y estadios'],['adult','Adultos'],
           ['female','Incluye hembras'],['male','Incluye machos'],['both','Ambos sexos'],['larva','Larvas'],['pupa','Pupas']],match:stageMatches},
+      ],
+      checkboxes:[
+        {key:'favorite',label:'☆ Solo favoritos',match:key => favoriteKeys.has(key.id)},
+        {key:'mode',label:'Solo terminales chilenos',match:key => key.terminales.length > 0},
+        {key:'figures',label:'Con figuras citadas',match:key => key.registros.some(row => row.figuras)},
       ],
     });
 }
@@ -4289,6 +4315,10 @@ function render({ focus = false } = {}) {
   }
   const restoredScroll = scrollPositions.get(location.hash);
   const nextRoute = getRoute();
+  if (nextRoute[0] !== 'bibliografia' || nextRoute[1] !== 'red') {
+    networkSides.incoming = true;
+    networkSides.outgoing = true;
+  }
   if (nextRoute.join('/') !== route?.join('/')) {
     if (dialog.open) dialog.close();
     if (figureDialog.open) figureDialog.close();
@@ -4657,6 +4687,24 @@ app.addEventListener('click', event => {
   }
   const target = event.target.closest('button,[data-code]');
   if (!target) return;
+  if (target.hasAttribute('data-search-clear')) {
+    const input = target.closest('.searchfield')?.querySelector('input[type="search"]');
+    if (input) {
+      input.value = '';
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+      input.focus();
+    }
+    return;
+  }
+  if (target.dataset.networkSide) {
+    const side = target.dataset.networkSide;
+    networkSides[side] = !networkSides[side];
+    const id = document.getElementById('citation-network').dataset.publication;
+    document.getElementById('network-results').innerHTML = networkResults(id);
+    centerNetworkViewport();
+    app.querySelector(`[data-network-side="${side}"]`)?.focus();
+    return;
+  }
   const specimenAction = target.dataset.specimenAction;
   if (specimenAction) {
     const specimen = specimens.find(entry => entry.id === target.dataset.specimenId);
@@ -4709,7 +4757,8 @@ app.addEventListener('click', event => {
     const open = section.dataset.glossaryOpen !== 'true';
     section.dataset.glossaryOpen = String(open);
     target.setAttribute('aria-expanded',String(open));
-    target.textContent = open ? 'Ocultar abreviaturas' : 'Ver todas las abreviaturas';
+    const noun = section.id === 'morphology-larvas-abreviaturas' ? 'estructuras' : 'abreviaturas';
+    target.textContent = open ? 'Ocultar ' + noun : 'Ver todas las ' + noun;
     return;
   }
   if (target.hasAttribute('data-reset-refs')) {
@@ -4846,12 +4895,12 @@ app.addEventListener('input', event => {
     return;
   }
   if (!event.target.matches('[data-list-query]') || !currentList) return;
-  if (currentList.id === 'morphology-glossary') {
+  if (['morphology-glossary','larval-morphology-glossary'].includes(currentList.id)) {
     const section = event.target.closest('.morphology-glossary');
     section.dataset.glossaryOpen = 'true';
     const button = section.querySelector('[data-glossary-toggle]');
     button.setAttribute('aria-expanded','true');
-    button.textContent = 'Ocultar abreviaturas';
+    button.textContent = currentList.id === 'larval-morphology-glossary' ? 'Ocultar estructuras' : 'Ocultar abreviaturas';
   }
   currentList.state.q = event.target.value;
   currentList.state.page = 0;
@@ -4862,19 +4911,13 @@ window.addEventListener('scroll',scheduleLetterIndex,{passive:true});
 window.addEventListener('resize',scheduleLetterIndex);
 app.addEventListener('toggle',event => {
   if (event.target.matches('.bibliography-item .refdetails')) scheduleLetterIndex();
-  if (currentList?.figureList && event.target.matches('.figure-filters')) currentList.state.filtersOpen = event.target.open;
 },true);
 app.addEventListener('change', event => {
   const target = event.target;
-  if (target.matches('#network-direction,#network-source')) {
-    const id = document.getElementById('citation-network').dataset.publication;
-    const direction = document.getElementById('network-direction').value;
-    const source = document.getElementById('network-source').value;
-    const query = new URLSearchParams(networkUrl(id,direction,source).split('?')[1]);
-    replaceHashQuery(query);
-    document.getElementById('network-results').innerHTML = networkResults(id,direction,source);
-    centerNetworkViewport();
-    searchNetwork(document.getElementById('network-search'));
+  if (target.dataset.listCheckbox && currentList) {
+    currentList.state.filters[target.dataset.listCheckbox] = target.checked ? 'yes' : '';
+    currentList.state.page = 0;
+    refreshList();
     return;
   }
   if (target.id === 'refAvail' || target.id === 'refSort') {
